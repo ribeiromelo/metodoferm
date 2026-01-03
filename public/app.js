@@ -826,13 +826,14 @@ const timer = {
     interval: null,
     state: {
         active: false,
-        isRevision: false, // New Flag
+        isRevision: false,
         subjectId: null,
         subjectName: null,
         startTime: null,
         elapsed: 0,
-        paused: false,
-        pauseTime: null
+        paused: true, // Start paused to allow setup
+        mode: 'stopwatch', // 'stopwatch' | 'countdown'
+        targetSeconds: 3600 // Default 60 min for countdown
     },
 
     init() {
@@ -845,7 +846,6 @@ const timer = {
                     this.startTicker();
                 } else {
                     this.updateDisplay();
-                    document.getElementById('btn-timer-toggle').innerHTML = '<i class="fas fa-play pl-1"></i>';
                 }
                 router.navigate('timer');
                 this.loadTopicsForSession(this.state.subjectId);
@@ -858,7 +858,10 @@ const timer = {
     },
 
     clearState() {
-        this.state = { active: false, isRevision: false, subjectId: null, subjectName: null, startTime: null, elapsed: 0, paused: false };
+        this.state = { 
+            active: false, isRevision: false, subjectId: null, subjectName: null, 
+            startTime: null, elapsed: 0, paused: true, mode: 'stopwatch', targetSeconds: 3600 
+        };
         localStorage.removeItem('studyflow_timer');
         document.getElementById('mobile-timer-indicator').classList.add('hidden');
     },
@@ -871,19 +874,71 @@ const timer = {
             subjectName: subjectName,
             startTime: Date.now(),
             elapsed: 0,
-            paused: false,
-            pauseTime: null
+            paused: true, // Start paused so user can choose mode
+            mode: 'stopwatch',
+            targetSeconds: (plannedMinutes > 0 ? plannedMinutes : 60) * 60
         };
+        
+        // Reset UI to Stopwatch
+        this.setMode('stopwatch');
+        
         this.saveState();
         this.restoreUI();
-        this.startTicker();
         router.navigate('timer');
         this.loadTopicsForSession(subjectId);
     },
 
+    setMode(mode) {
+        this.state.mode = mode;
+        const btnStop = document.getElementById('btn-mode-stopwatch');
+        const btnCount = document.getElementById('btn-mode-countdown');
+        const inputContainer = document.getElementById('timer-input-container');
+
+        if (mode === 'stopwatch') {
+            btnStop.className = "px-4 py-2 rounded-lg text-sm font-bold transition-all bg-white text-indigo-600 shadow-sm";
+            btnCount.className = "px-4 py-2 rounded-lg text-sm font-bold transition-all text-slate-500 hover:text-indigo-600";
+            inputContainer.classList.add('hidden');
+        } else {
+            btnCount.className = "px-4 py-2 rounded-lg text-sm font-bold transition-all bg-white text-indigo-600 shadow-sm";
+            btnStop.className = "px-4 py-2 rounded-lg text-sm font-bold transition-all text-slate-500 hover:text-indigo-600";
+            // Show input to edit time initially
+            if (this.state.elapsed === 0) {
+                inputContainer.classList.remove('hidden');
+                document.getElementById('timer-input-min').value = Math.floor(this.state.targetSeconds / 60);
+                document.getElementById('timer-input-min').focus();
+            }
+        }
+        this.updateDisplay();
+        this.saveState();
+    },
+
+    editTime() {
+        if (this.state.mode === 'countdown' && this.state.paused) {
+            document.getElementById('timer-input-container').classList.remove('hidden');
+            document.getElementById('timer-input-min').value = Math.floor(this.state.targetSeconds / 60);
+            document.getElementById('timer-input-min').focus();
+        }
+    },
+
+    saveTime() {
+        const mins = parseInt(document.getElementById('timer-input-min').value) || 1;
+        this.state.targetSeconds = mins * 60;
+        this.state.elapsed = 0; // Reset progress if time changed
+        document.getElementById('timer-input-container').classList.add('hidden');
+        this.updateDisplay();
+        this.saveState();
+    },
+
     restoreUI() {
         document.getElementById('timer-subject-display').innerText = (this.state.isRevision ? '[Revisão] ' : '') + this.state.subjectName;
-        document.getElementById('btn-timer-toggle').innerHTML = '<i class="fas fa-pause"></i>';
+        
+        const btnToggle = document.getElementById('btn-timer-toggle');
+        if (this.state.paused) {
+            btnToggle.innerHTML = '<i class="fas fa-play pl-1"></i>';
+        } else {
+            btnToggle.innerHTML = '<i class="fas fa-pause"></i>';
+        }
+
         const mobInd = document.getElementById('mobile-timer-indicator');
         mobInd.classList.remove('hidden');
         mobInd.classList.add('flex');
@@ -897,6 +952,8 @@ const timer = {
             headerBadge.className = "text-[10px] uppercase tracking-widest text-blue-600 font-bold bg-blue-50 px-3 py-1 rounded-full";
             headerBadge.innerText = "Foco Total";
         }
+        
+        this.setMode(this.state.mode); // Restore tabs
     },
 
     startTicker() {
@@ -904,6 +961,17 @@ const timer = {
         this.interval = setInterval(() => {
             if (!this.state.paused) {
                 this.state.elapsed++;
+                
+                // Countdown Finished Check
+                if (this.state.mode === 'countdown' && this.state.elapsed >= this.state.targetSeconds) {
+                    this.state.paused = true;
+                    this.state.elapsed = this.state.targetSeconds; // Clamp
+                    this.updateDisplay();
+                    this.finish(); // Auto finish/open modal
+                    ui.toast('Tempo esgotado! Bom trabalho. ⏰');
+                    // Play sound here if desired
+                }
+
                 if(this.state.elapsed % 5 === 0) this.saveState(); 
                 this.updateDisplay();
             }
@@ -911,9 +979,16 @@ const timer = {
     },
 
     updateDisplay() {
-        const h = Math.floor(this.state.elapsed / 3600).toString().padStart(2, '0');
-        const m = Math.floor((this.state.elapsed % 3600) / 60).toString().padStart(2, '0');
-        const s = (this.state.elapsed % 60).toString().padStart(2, '0');
+        let displaySeconds = this.state.elapsed;
+        
+        // If countdown, show remaining time
+        if (this.state.mode === 'countdown') {
+            displaySeconds = Math.max(0, this.state.targetSeconds - this.state.elapsed);
+        }
+
+        const h = Math.floor(displaySeconds / 3600).toString().padStart(2, '0');
+        const m = Math.floor((displaySeconds % 3600) / 60).toString().padStart(2, '0');
+        const s = (displaySeconds % 60).toString().padStart(2, '0');
         
         const display = document.getElementById('timer-display');
         if(display) display.innerText = `${h}:${m}:${s}`;
@@ -925,11 +1000,21 @@ const timer = {
     },
 
     toggle() {
+        // If countdown and time is up, reset elapsed? No, just finish.
+        if (this.state.mode === 'countdown' && this.state.elapsed >= this.state.targetSeconds) {
+            this.finish();
+            return;
+        }
+
         this.state.paused = !this.state.paused;
+        const btnToggle = document.getElementById('btn-timer-toggle');
+        
         if (this.state.paused) {
-            document.getElementById('btn-timer-toggle').innerHTML = '<i class="fas fa-play pl-1"></i>';
+            btnToggle.innerHTML = '<i class="fas fa-play pl-1"></i>';
+            clearInterval(this.interval);
         } else {
-            document.getElementById('btn-timer-toggle').innerHTML = '<i class="fas fa-pause"></i>';
+            btnToggle.innerHTML = '<i class="fas fa-pause"></i>';
+            this.startTicker();
         }
         this.saveState();
     },
