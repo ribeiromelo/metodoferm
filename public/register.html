@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Conta - Método FERM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-white h-screen flex overflow-hidden">
+
+    <!-- Left Side (Visual) -->
+    <div class="hidden lg:flex lg:w-1/2 bg-slate-900 relative overflow-hidden items-center justify-center p-12 text-white">
+        <!-- Background Decor -->
+        <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-slate-900 to-slate-800 z-0"></div>
+        <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-indigo-900/20 to-transparent"></div>
+        
+        <!-- Animated Elements -->
+        <div class="absolute top-1/4 right-1/4 w-32 h-32 bg-indigo-500 rounded-full blur-[80px] opacity-40 animate-pulse"></div>
+        <div class="absolute bottom-1/4 left-1/4 w-40 h-40 bg-purple-500 rounded-full blur-[80px] opacity-40 animate-pulse" style="animation-delay: 1s;"></div>
+
+        <div class="relative z-10 max-w-lg">
+            <h2 class="text-4xl font-bold mb-6 tracking-tight leading-tight">Junte-se a milhares de estudantes de alta performance.</h2>
+            
+            <div class="space-y-6 mt-10">
+                <div class="flex items-center gap-4 bg-white/5 backdrop-blur-sm p-4 rounded-2xl border border-white/10">
+                    <div class="w-10 h-10 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center text-lg"><i class="fas fa-check"></i></div>
+                    <div>
+                        <h3 class="font-bold">Ciclo Automático</h3>
+                        <p class="text-slate-400 text-sm">Nunca mais perca tempo planejando.</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4 bg-white/5 backdrop-blur-sm p-4 rounded-2xl border border-white/10">
+                    <div class="w-10 h-10 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-lg"><i class="fas fa-chart-line"></i></div>
+                    <div>
+                        <h3 class="font-bold">Dashboard de Métricas</h3>
+                        <p class="text-slate-400 text-sm">Identifique e elimine seus pontos fracos.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Side (Form) -->
+    <div class="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
+        <div class="w-full max-w-md">
+            <div class="text-center lg:text-left mb-10">
+                <a href="/landing.html" class="inline-flex items-center gap-2 text-indigo-600 font-bold text-xl mb-8 lg:hidden">
+                    <i class="fas fa-brain"></i> Método FERM
+                </a>
+                <h1 class="text-3xl font-bold text-slate-900 mb-2">Crie sua conta</h1>
+                <p class="text-slate-500">Comece sua jornada rumo à aprovação hoje mesmo.</p>
+            </div>
+
+            <form id="registerForm" class="space-y-5">
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Nome Completo</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-3.5 text-slate-400"><i class="far fa-user"></i></span>
+                        <input type="text" id="name" required class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all font-medium text-slate-700" placeholder="Seu nome">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Email</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-3.5 text-slate-400"><i class="far fa-envelope"></i></span>
+                        <input type="email" id="email" required class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all font-medium text-slate-700 placeholder="seu@email.com">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Senha</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-3.5 text-slate-400"><i class="fas fa-lock"></i></span>
+                        <input type="password" id="password" required class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all font-medium text-slate-700" placeholder="Mínimo 6 caracteres">
+                    </div>
+                </div>
+                
+                <div id="error-msg" class="text-red-500 text-sm bg-red-50 p-3 rounded-lg flex items-center gap-2 hidden border border-red-100">
+                    <i class="fas fa-exclamation-circle"></i> <span>Erro aqui</span>
+                </div>
+
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-indigo-200 transition-all hover:-translate-y-0.5 active:translate-y-0 text-lg">
+                    Criar Conta Grátis
+                </button>
+            </form>
+
+            <div class="mt-8 text-center">
+                <p class="text-slate-500 text-sm">
+                    Já tem uma conta? 
+                    <a href="/login.html" class="text-indigo-600 font-bold hover:text-indigo-700 hover:underline transition-colors">Fazer login</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const btn = e.target.querySelector('button');
+            const errorDiv = document.getElementById('error-msg');
+            const originalText = btn.innerText;
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Criando conta...';
+            errorDiv.classList.add('hidden');
+
+            try {
+                const res = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    localStorage.setItem('studyflow_user', JSON.stringify(data.user));
+                    window.location.href = '/app.html';
+                } else {
+                    throw new Error(data.error || 'Erro ao criar conta. Tente outro email.');
+                }
+            } catch (err) {
+                errorDiv.querySelector('span').innerText = err.message;
+                errorDiv.classList.remove('hidden');
+                btn.disabled = false;
+                btn.innerText = originalText;
+            }
+        });
+    </script>
+</body>
+</html>

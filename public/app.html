@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Método FERM App</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="/styles.css">
+
+    <script>
+        tailwind.config = {
+            // Força o carregamento dessas classes de cores
+            safelist: [
+                'bg-blue-500', 'bg-red-500', 'bg-green-500', 'bg-yellow-500', 'bg-purple-500',
+                'peer-checked:ring-blue-200', 'peer-checked:ring-red-200', 'peer-checked:ring-green-200', 
+                'peer-checked:ring-yellow-200', 'peer-checked:ring-purple-200',
+                'text-blue-500', 'text-red-500', 'text-green-500', 'text-yellow-500', 'text-purple-500'
+            ],
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        },
+                        dark: '#0f172a',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 text-slate-800 font-sans h-screen flex overflow-hidden selection:bg-indigo-100 selection:text-indigo-700">
+
+    <!-- MOBILE OVERLAY (Backdrop) -->
+    <div id="sidebar-overlay" onclick="ui.toggleSidebar()" class="fixed inset-0 bg-slate-900/50 z-40 hidden backdrop-blur-sm transition-opacity lg:hidden"></div>
+
+    <!-- SIDEBAR (Modern & Responsive) -->
+    <aside id="sidebar" class="fixed top-0 left-0 z-50 h-full w-72 bg-white border-r border-slate-100 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col shadow-2xl lg:shadow-none">
+        
+        <!-- Logo Area -->
+        <div class="h-20 flex items-center px-8 border-b border-slate-50">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
+                    <i class="fas fa-brain text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-slate-900 tracking-tight leading-none">Método FERM</h1>
+                    <span class="text-[10px] font-bold text-blue-600 uppercase tracking-wider">Pro</span>
+                </div>
+            </div>
+            <!-- Close Button (Mobile Only) -->
+            <button onclick="ui.toggleSidebar()" class="lg:hidden ml-auto text-slate-400 hover:text-slate-600">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto custom-scrollbar">
+            <p class="px-4 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Principal</p>
+            
+            <button onclick="router.navigate('dashboard')" class="nav-item group w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-indigo-600 transition-all duration-200" data-target="view-dashboard">
+                <i class="fas fa-chart-pie w-5 text-center transition-colors group-hover:text-indigo-600"></i>
+                <span class="font-medium">Dashboard</span>
+            </button>
+            
+            <button onclick="router.navigate('cycle')" class="nav-item group w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-indigo-600 transition-all duration-200" data-target="view-cycle">
+                <i class="fas fa-sync-alt w-5 text-center transition-colors group-hover:text-indigo-600"></i>
+                <span class="font-medium">Ciclo de Estudos</span>
+            </button>
+
+            <button onclick="router.navigate('revisions')" class="nav-item group w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-indigo-600 transition-all duration-200" data-target="view-revisions">
+                <i class="fas fa-history w-5 text-center transition-colors group-hover:text-indigo-600"></i>
+                <span class="font-medium">Revisões</span>
+            </button>
+            
+            <button onclick="router.navigate('subjects')" class="nav-item group w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-indigo-600 transition-all duration-200" data-target="view-subjects">
+                <i class="fas fa-book w-5 text-center transition-colors group-hover:text-indigo-600"></i>
+                <span class="font-medium">Matérias</span>
+            </button>
+        </nav>
+
+        <!-- Action Button -->
+        <div class="px-6 py-4">
+            <button onclick="router.navigate('cycle')" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg shadow-slate-200 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2">
+                <i class="fas fa-play text-sm"></i>
+                <span>Estudar Agora</span>
+            </button>
+        </div>
+
+        <!-- User Profile (Bottom) -->
+        <div class="border-t border-slate-50 p-4 bg-slate-50/50">
+            <div onclick="router.navigate('profile')" class="flex items-center gap-3 p-2 rounded-xl hover:bg-white hover:shadow-md transition-all cursor-pointer group relative border border-transparent hover:border-slate-100" title="Ir para Meu Perfil">
+                <div class="w-10 h-10 bg-white border border-slate-200 rounded-full flex items-center justify-center text-slate-400 font-bold text-lg shadow-sm group-hover:text-blue-600 transition-colors">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-bold text-slate-700 truncate group-hover:text-blue-700" id="user-name-display">Usuário</p>
+                    <p class="text-xs text-slate-400 truncate">Ver perfil</p>
+                </div>
+                <button onclick="event.stopPropagation(); auth.logout()" class="text-slate-300 hover:text-red-500 transition-colors p-2 hover:bg-red-50 rounded-lg" title="Sair">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-1 flex flex-col min-w-0 lg:ml-72 transition-all duration-300">
+        
+        <!-- MOBILE HEADER -->
+        <header class="lg:hidden bg-white/80 backdrop-blur-md border-b border-slate-100 h-16 flex items-center justify-between px-4 sticky top-0 z-30">
+            <div class="flex items-center gap-3">
+                <button onclick="ui.toggleSidebar()" class="p-2 -ml-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <span class="font-bold text-slate-800">Método FERM</span>
+            </div>
+            <!-- Current Timer Indicator (Mobile) -->
+            <div id="mobile-timer-indicator" class="hidden text-xs font-mono bg-indigo-100 text-indigo-700 px-2 py-1 rounded-md cursor-pointer" onclick="router.navigate('timer')">
+                <i class="fas fa-clock mr-1"></i> <span id="mobile-timer-time">00:00</span>
+            </div>
+        </header>
+
+        <!-- SCROLLABLE CONTENT -->
+        <div class="flex-1 overflow-y-auto p-4 md:p-8 pb-32 custom-scrollbar">
+            <!-- Mudança aqui: de max-w-6xl para w-full max-w-[2000px] -->
+            <div class="w-full max-w-[2000px] mx-auto space-y-8">
+                
+                <!-- VIEW: DASHBOARD -->
+                <section id="view-dashboard" class="view-section animate-fade-in">
+                    <header class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+                        <div>
+                            <h2 class="text-3xl font-bold text-slate-900">Visão Geral</h2>
+                            <p class="text-slate-500 mt-1">Acompanhe sua evolução diária.</p>
+                        </div>
+                        <div class="bg-white px-4 py-2 rounded-full shadow-sm border border-slate-100 text-sm font-medium text-slate-600">
+                            📅 <span id="current-date">Hoje</span>
+                        </div>
+                    </header>
+
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <!-- Card Tempo Hoje -->
+                        <div class="bg-white p-6 rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 relative overflow-hidden group hover:border-indigo-200 transition-colors">
+                            <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
+                                <i class="fas fa-clock text-6xl text-indigo-600"></i>
+                            </div>
+                            <h3 class="text-slate-500 text-sm font-semibold uppercase tracking-wider mb-2">Tempo Hoje</h3>
+                            <p class="text-3xl font-bold text-slate-900 tracking-tight" id="dash-today-time">0h 00m</p>
+                            <div class="mt-4 flex items-center gap-2">
+                                <span class="bg-green-50 text-green-700 px-2 py-0.5 rounded-lg text-xs font-bold" id="dash-today-sessions">0 sessões</span>
+                            </div>
+                        </div>
+
+                        <!-- Card Tempo Total (NOVO) -->
+                        <div class="bg-white p-6 rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 relative overflow-hidden group hover:border-indigo-200 transition-colors">
+                            <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
+                                <i class="fas fa-history text-6xl text-indigo-600"></i>
+                            </div>
+                            <h3 class="text-slate-500 text-sm font-semibold uppercase tracking-wider mb-2">Tempo Total</h3>
+                            <p class="text-3xl font-bold text-slate-900 tracking-tight" id="dash-total-time">0h 00m</p>
+                            <div class="mt-4 text-xs text-slate-400">
+                                Acumulado desde o início
+                            </div>
+                        </div>
+
+                        <!-- Card Acertos -->
+                        <div class="bg-white p-6 rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 relative overflow-hidden group hover:border-green-200 transition-colors">
+                            <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
+                                <i class="fas fa-check-circle text-6xl text-green-600"></i>
+                            </div>
+                            <h3 class="text-slate-500 text-sm font-semibold uppercase tracking-wider mb-2">Aproveitamento</h3>
+                            <p class="text-3xl font-bold text-slate-900 tracking-tight" id="dash-accuracy">0%</p>
+                            <div class="mt-4">
+                                <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                                    <div id="dash-acc-bar" class="h-full bg-green-500 rounded-full" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card Questões -->
+                        <div class="bg-white p-6 rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 relative overflow-hidden group hover:border-purple-200 transition-colors">
+                            <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
+                                <i class="fas fa-pencil-alt text-6xl text-purple-600"></i>
+                            </div>
+                            <h3 class="text-slate-500 text-sm font-semibold uppercase tracking-wider mb-2">Questões</h3>
+                            <p class="text-3xl font-bold text-slate-900 tracking-tight" id="dash-questions">0</p>
+                            <div class="mt-4 text-xs text-slate-400">
+                                Resolvidas no total
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Area -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+                        <!-- Chart 1: Distribuição (Acertos vs Erros) - Maior -->
+                        <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                            <h3 class="font-bold text-slate-800 mb-6 flex items-center gap-2"><i class="fas fa-chart-pie text-blue-500"></i> Desempenho por Matéria</h3>
+                            <div class="h-64 w-full">
+                                <canvas id="chart-distribution"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Chart 2: Top Matérias (Ranking) - Novo -->
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col">
+                            <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2"><i class="fas fa-trophy text-yellow-500"></i> Top Matérias</h3>
+                            <div id="top-subjects-list" class="flex-1 overflow-y-auto space-y-4 custom-scrollbar pr-2">
+                                <!-- JS Injected List -->
+                                <p class="text-sm text-slate-400 text-center py-4">Estude para gerar ranking.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Chart 3: Constância (Full Width) -->
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                        <h3 class="font-bold text-slate-800 mb-6 flex items-center gap-2"><i class="fas fa-calendar-check text-indigo-500"></i> Constância (Últimos 30 dias)</h3>
+                        <div class="h-48 w-full">
+                            <canvas id="chart-activity"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW: CICLO -->
+                <section id="view-cycle" class="view-section hidden animate-fade-in space-y-8">
+                    <header class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-3xl font-bold text-slate-900">Ciclo de Estudos</h2>
+                            <p class="text-slate-500 mt-1">Sua fila de estudo infinita e inteligente.</p>
+                        </div>
+                        <button onclick="cycleManager.openAddModal()" class="bg-white border border-slate-200 text-slate-600 hover:text-blue-600 hover:border-blue-200 px-5 py-2.5 rounded-xl text-sm font-bold shadow-sm transition-all flex items-center justify-center gap-2">
+                            <i class="fas fa-plus"></i> Adicionar Matéria
+                        </button>
+                    </header>
+
+                    <!-- Next Subject Card (Highlight) -->
+                    <div id="cycle-next-card" class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-3xl p-8 md:p-10 text-white shadow-xl shadow-blue-200 hidden relative overflow-hidden">
+                        <div class="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+                        <div class="absolute bottom-0 left-0 -mb-10 -ml-10 w-40 h-40 bg-black/10 rounded-full blur-2xl"></div>
+                        
+                        <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+                            <div class="space-y-4">
+                                <span class="inline-flex items-center gap-1.5 bg-white/20 px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase backdrop-blur-md border border-white/10">
+                                    <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                                    Sua vez de estudar
+                                </span>
+                                <div>
+                                    <h2 class="text-4xl md:text-5xl font-bold mb-2 tracking-tight" id="cycle-next-subject">Matéria</h2>
+                                    <p class="text-blue-100 text-lg flex items-center gap-2">
+                                        <i class="far fa-clock"></i> Meta: <span id="cycle-next-duration" class="font-bold">60</span> min
+                                    </p>
+                                </div>
+                            </div>
+                            <button onclick="/* JS fills this */" id="btn-start-cycle" class="w-full md:w-auto bg-white text-blue-700 hover:bg-blue-50 font-bold py-4 px-8 rounded-2xl shadow-lg transition-transform hover:scale-105 active:scale-95 flex items-center justify-center gap-3">
+                                <i class="fas fa-play text-lg"></i> 
+                                <span>Começar Agora</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Cycle List -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                        <div class="p-6 border-b border-slate-100 bg-slate-50/50">
+                            <h3 class="font-bold text-slate-700 flex items-center gap-2"><i class="fas fa-list-ol"></i> Fila Completa</h3>
+                        </div>
+                        <div id="cycle-list" class="divide-y divide-slate-100">
+                            <!-- Items injected here -->
+                        </div>
+                        <div id="cycle-empty" class="p-16 text-center text-slate-400 hidden">
+                            <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-inbox text-3xl text-slate-300"></i>
+                            </div>
+                            <h3 class="text-lg font-semibold text-slate-600">Ciclo Vazio</h3>
+                            <p class="text-sm mt-1">Adicione matérias para o algoritmo organizar sua rotina.</p>
+                        </div>
+                    </div>
+
+                    <!-- Cycle History Section -->
+                    <div class="border-t border-slate-200 pt-8 mt-8">
+                        <h3 class="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2">
+                            <i class="fas fa-history text-slate-400"></i> Dias Anteriores
+                        </h3>
+                        <div id="cycle-history-list" class="space-y-3">
+                            <!-- JS Injected History -->
+                            <p class="text-slate-400 text-sm italic">Carregando histórico...</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW: REVISÕES -->
+                <section id="view-revisions" class="view-section hidden animate-fade-in space-y-8">
+                    <header class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-3xl font-bold text-slate-900">Revisões</h2>
+                            <p class="text-slate-500 mt-1">Histórico de retenção e manutenções.</p>
+                        </div>
+                        <button onclick="revisionsManager.openStartModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-indigo-200 transition-all flex items-center justify-center gap-2">
+                            <i class="fas fa-play"></i> Revisar Agora
+                        </button>
+                    </header>
+
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                        <div class="p-6 border-b border-slate-100 bg-slate-50/50">
+                            <h3 class="font-bold text-slate-700 flex items-center gap-2"><i class="fas fa-history"></i> Histórico Recente</h3>
+                        </div>
+                        <div id="revisions-list" class="divide-y divide-slate-100">
+                            <!-- Items injected here -->
+                        </div>
+                        <div id="revisions-empty" class="p-16 text-center text-slate-400 hidden">
+                            <i class="fas fa-ghost text-3xl mb-4 opacity-50"></i>
+                            <p>Nenhuma revisão registrada ainda.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW: PROFILE -->
+                <section id="view-profile" class="view-section hidden animate-fade-in space-y-8">
+                    <!-- Profile Header (Cover & Info) -->
+                    <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+                        <div id="profile-cover" class="h-48 bg-gradient-to-r from-blue-600 to-indigo-600 relative">
+                            <button onclick="profileManager.toggleEditMode()" class="absolute top-4 right-4 bg-white/20 backdrop-blur-md text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-white/30 transition-all">
+                                <i class="fas fa-edit mr-2"></i> Editar Perfil
+                            </button>
+                        </div>
+                        <div class="px-8 pb-8">
+                            <div class="relative z-10 flex flex-col md:flex-row items-center md:items-end -mt-16 gap-6">
+                                <div class="w-32 h-32 rounded-full border-4 border-white shadow-lg bg-white flex items-center justify-center text-4xl overflow-hidden" id="profile-avatar-container">
+                                    <img src="https://api.dicebear.com/7.x/notionists/svg?seed=1" alt="Avatar" class="w-full h-full">
+                                </div>
+                                <div class="flex-1 text-center md:text-left mb-2">
+                                    <h2 class="text-3xl font-bold text-slate-900" id="profile-name">Nome do Usuário</h2>
+                                    <p class="text-slate-500 font-medium" id="profile-nickname">@apelido</p>
+                                </div>
+                                <div class="bg-slate-50 px-6 py-3 rounded-2xl border border-slate-100 text-center min-w-[150px]">
+                                    <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Nível Atual</span>
+                                    <span class="block text-xl font-bold text-indigo-600" id="profile-level">Novato</span>
+                                </div>
+                            </div>
+
+                            <!-- Gamification Bar -->
+                            <div class="mt-8">
+                                <div class="flex justify-between text-sm font-bold text-slate-500 mb-2">
+                                    <span>Progresso para o próximo nível</span>
+                                    <span id="profile-xp-text">0 / 100 Questões</span>
+                                </div>
+                                <div class="w-full h-4 bg-slate-100 rounded-full overflow-hidden">
+                                    <div id="profile-xp-bar" class="h-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-1000" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Settings & Stats Grid -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        
+                        <!-- Edit Settings Form -->
+                        <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+                            <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                                <i class="fas fa-cog text-slate-400"></i> Configurações
+                            </h3>
+                            <form onsubmit="profileManager.saveSettings(event)" class="space-y-6">
+                                <div>
+                                    <label class="block text-sm font-bold text-slate-700 mb-2">Apelido / Nome de Exibição</label>
+                                    <input type="text" id="input-nickname" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-medium">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-slate-700 mb-2">Alterar Senha</label>
+                                    <input type="password" id="input-password" placeholder="Nova senha (min 6 caracteres)" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-medium">
+                                    <p class="text-xs text-slate-400 mt-1">Deixe em branco para manter a atual.</p>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-bold text-slate-700 mb-3">Escolha seu Avatar</label>
+                                    <div class="flex gap-3 overflow-x-auto pb-2 custom-scrollbar">
+                                        <!-- Avatars generated by JS -->
+                                        <div id="avatar-selector" class="flex gap-2"></div>
+                                    </div>
+                                    <input type="hidden" id="input-avatar-id">
+                                </div>
+
+                                <button type="submit" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold shadow-lg transition-all">Salvar Alterações</button>
+                            </form>
+                        </div>
+
+                        <!-- Achievements / Badges (Future Proofing) -->
+                        <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center">
+                            <div class="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center text-4xl mb-4 animate-bounce">
+                                🏆
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-800 mb-2">Próxima Conquista</h3>
+                            <p class="text-slate-500 mb-6 max-w-xs">Continue resolvendo questões para desbloquear a patente de <span class="text-indigo-600 font-bold" id="profile-next-badge">Aprendiz</span>.</p>
+                            
+                            <div class="grid grid-cols-3 gap-4 w-full">
+                                <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                    <i class="fas fa-fire text-orange-500 text-2xl mb-2"></i>
+                                    <p class="text-xs font-bold text-slate-600">Constância</p>
+                                </div>
+                                <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                    <i class="fas fa-brain text-purple-500 text-2xl mb-2"></i>
+                                    <p class="text-xs font-bold text-slate-600">Foco</p>
+                                </div>
+                                <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                    <i class="fas fa-star text-yellow-500 text-2xl mb-2"></i>
+                                    <p class="text-xs font-bold text-slate-600">Elite</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW: MATÉRIAS -->
+                <section id="view-subjects" class="view-section hidden animate-fade-in space-y-8">
+                    <header class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-3xl font-bold text-slate-900">Matérias e Assuntos</h2>
+                            <p class="text-slate-500 mt-1">Gerencie seu edital verticalizado.</p>
+                        </div>
+                        <button onclick="subjectsManager.openAddModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-indigo-200 transition-all flex items-center justify-center gap-2">
+                            <i class="fas fa-plus"></i> Nova Matéria
+                        </button>
+                    </header>
+
+                    <div id="subjects-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
+                        <!-- Cards injected here -->
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- VIEW: TIMER (Overlay Fullscreen) -->
+    <div id="view-timer" class="fixed inset-0 z-[100] bg-white hidden flex-col animate-scale-in">
+        <!-- Timer Header -->
+        <header class="h-20 flex items-center justify-between px-6 md:px-10 border-b border-slate-100">
+            <button onclick="timer.minimize()" class="w-10 h-10 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-colors" title="Minimizar">
+                <i class="fas fa-chevron-down text-lg"></i>
+            </button>
+            
+            <div class="text-center">
+                <span class="text-[10px] uppercase tracking-widest text-blue-600 font-bold bg-blue-50 px-3 py-1 rounded-full">Foco Total</span>
+            </div>
+            
+            <button onclick="timer.cancel()" class="text-red-400 hover:text-red-600 text-sm font-bold hover:bg-red-50 px-4 py-2 rounded-lg transition-colors">
+                Cancelar
+            </button>
+        </header>
+
+        <!-- Timer Body -->
+        <div class="flex-1 flex flex-col items-center justify-center p-6 relative overflow-hidden">
+            <!-- Background Decorations -->
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-50 rounded-full blur-3xl -z-10 opacity-50"></div>
+
+            <h2 class="text-2xl md:text-4xl font-bold text-slate-800 mb-2 text-center" id="timer-subject-display">Matéria</h2>
+            <p class="text-slate-400 text-sm mb-12">Mantenha o foco. Desative notificações.</p>
+
+            <div class="text-[6rem] md:text-[10rem] font-mono font-bold text-slate-900 tracking-tighter leading-none mb-12 font-variant-numeric tabular-nums" id="timer-display">
+                00:00:00
+            </div>
+            
+            <button id="btn-timer-toggle" onclick="timer.toggle()" class="w-24 h-24 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white flex items-center justify-center text-3xl shadow-2xl shadow-indigo-300 transition-all hover:scale-110 active:scale-95 mb-12">
+                <i class="fas fa-pause"></i>
+            </button>
+
+            <!-- Assunto Selection -->
+            <div class="w-full max-w-md bg-white p-2 rounded-2xl border border-slate-200 shadow-sm relative z-20">
+                <label class="block text-xs font-bold text-slate-400 mb-1 px-2 uppercase text-center">O que você está estudando?</label>
+                <select id="timer-topic-select" class="w-full p-3 bg-slate-50 border-none rounded-xl text-slate-700 font-medium focus:ring-2 focus:ring-indigo-100 outline-none text-center">
+                    <option value="">Apenas a matéria geral</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Timer Footer -->
+        <div class="p-6 md:p-10 border-t border-slate-100 flex justify-center bg-white/80 backdrop-blur-md">
+            <button onclick="timer.finish()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-12 rounded-2xl shadow-xl shadow-green-100 transition-transform hover:scale-105 active:scale-95 flex items-center gap-3">
+                <i class="fas fa-check-circle text-xl"></i>
+                <span>Finalizar Sessão</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- MODALS -->
+    
+    <!-- Finish Session Modal -->
+    <div id="modal-finish" class="fixed inset-0 bg-slate-900/60 z-[110] hidden items-center justify-center p-4 backdrop-blur-sm animate-fade-in">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden animate-scale-in">
+            <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 text-white text-center">
+                <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3 backdrop-blur-sm">
+                    <i class="fas fa-trophy text-2xl text-yellow-300"></i>
+                </div>
+                <h3 class="text-xl font-bold">Sessão Finalizada!</h3>
+                <p class="text-blue-100 text-sm">Registre seu desempenho.</p>
+            </div>
+            
+            <form id="form-finish-session" onsubmit="timer.saveSession(event)" class="p-6 space-y-5">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                        <label class="block text-xs font-bold text-slate-500 mb-1 uppercase">Questões</label>
+                        <input type="number" id="finish-q-total" class="w-full bg-transparent font-bold text-xl text-slate-800 outline-none placeholder-slate-300" min="0" placeholder="0">
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                        <label class="block text-xs font-bold text-green-600 mb-1 uppercase">Acertos</label>
+                        <input type="number" id="finish-q-correct" class="w-full bg-transparent font-bold text-xl text-green-600 outline-none placeholder-green-200" min="0" placeholder="0">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Notas Rápidas</label>
+                    <textarea id="finish-notes" rows="3" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none resize-none transition-all" placeholder="O que aprendi hoje..."></textarea>
+                </div>
+
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="document.getElementById('modal-finish').classList.add('hidden'); document.getElementById('modal-finish').classList.remove('flex')" class="flex-1 py-3 text-slate-500 hover:bg-slate-50 rounded-xl font-bold transition-colors">Cancelar</button>
+                    <button type="submit" class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-lg shadow-indigo-200 transition-all">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Subject Modal -->
+    <div id="modal-add-subject" class="fixed inset-0 bg-slate-900/60 z-[110] hidden items-center justify-center p-4 backdrop-blur-sm animate-fade-in">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-8 animate-scale-in relative">
+            <button onclick="subjectsManager.closeAddModal()" class="absolute top-4 right-4 text-slate-300 hover:text-slate-500"><i class="fas fa-times"></i></button>
+            
+            <h3 class="text-xl font-bold text-slate-800 mb-6">Nova Matéria</h3>
+            <form onsubmit="subjectsManager.createSubject(event)" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Nome da Matéria</label>
+                    <input type="text" name="name" required class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium" placeholder="Ex: Direito Constitucional">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-3">Cor de Identificação</label>
+                    <input type="hidden" name="color" id="subject-color-input" value="#3b82f6">
+                    <div class="flex gap-4 flex-wrap justify-center" id="color-picker-container">
+                        <!-- Blue (Default) -->
+                        <button type="button" onclick="subjectsManager.selectColor(this, '#3b82f6')" class="w-12 h-12 rounded-full bg-blue-500 hover:scale-110 transition-transform ring-4 ring-blue-200 ring-offset-2">
+                            <i class="fas fa-check text-white"></i>
+                        </button>
+                        
+                        <!-- Red -->
+                        <button type="button" onclick="subjectsManager.selectColor(this, '#ef4444')" class="w-12 h-12 rounded-full bg-red-500 hover:scale-110 transition-transform ring-transparent ring-offset-2 hover:ring-4 hover:ring-red-100">
+                            <i class="fas fa-check text-white hidden"></i>
+                        </button>
+                        
+                        <!-- Green -->
+                        <button type="button" onclick="subjectsManager.selectColor(this, '#22c55e')" class="w-12 h-12 rounded-full bg-green-500 hover:scale-110 transition-transform ring-transparent ring-offset-2 hover:ring-4 hover:ring-green-100">
+                            <i class="fas fa-check text-white hidden"></i>
+                        </button>
+                        
+                        <!-- Yellow -->
+                        <button type="button" onclick="subjectsManager.selectColor(this, '#eab308')" class="w-12 h-12 rounded-full bg-yellow-500 hover:scale-110 transition-transform ring-transparent ring-offset-2 hover:ring-4 hover:ring-yellow-100">
+                            <i class="fas fa-check text-white hidden"></i>
+                        </button>
+                        
+                        <!-- Purple -->
+                        <button type="button" onclick="subjectsManager.selectColor(this, '#a855f7')" class="w-12 h-12 rounded-full bg-purple-500 hover:scale-110 transition-transform ring-transparent ring-offset-2 hover:ring-4 hover:ring-purple-100">
+                            <i class="fas fa-check text-white hidden"></i>
+                        </button>
+                    </div>
+                </div>
+                <button type="submit" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-lg shadow-indigo-200 transition-all">Criar Matéria</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Cycle Item Modal -->
+    <div id="modal-add-cycle" class="fixed inset-0 bg-slate-900/60 z-[110] hidden items-center justify-center p-4 backdrop-blur-sm animate-fade-in">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-8 animate-scale-in relative">
+            <button onclick="cycleManager.closeAddModal()" class="absolute top-4 right-4 text-slate-300 hover:text-slate-500"><i class="fas fa-times"></i></button>
+            
+            <h3 class="text-xl font-bold text-slate-800 mb-6">Adicionar ao Ciclo</h3>
+            <form onsubmit="cycleManager.addToCycle(event)" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Selecione a Matéria</label>
+                    <select id="cycle-subject-select" name="subject_id" required class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-medium">
+                        <!-- Options filled by JS -->
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Meta de Tempo (minutos)</label>
+                    <div class="flex items-center gap-4">
+                        <button type="button" onclick="document.querySelector('input[name=duration]').stepDown(15)" class="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600"><i class="fas fa-minus"></i></button>
+                        <input type="number" name="duration" value="60" min="15" step="15" required class="w-full p-3.5 text-center font-bold text-xl bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                        <button type="button" onclick="document.querySelector('input[name=duration]').stepUp(15)" class="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600"><i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+                <button type="submit" class="w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold shadow-lg shadow-slate-200 transition-all">Adicionar à Fila</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/app.js"></script>
+</body>
+</html>

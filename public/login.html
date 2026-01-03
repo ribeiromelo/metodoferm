@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrar - Método FERM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-white h-screen flex overflow-hidden">
+
+    <!-- Left Side (Visual) -->
+    <div class="hidden lg:flex lg:w-1/2 bg-indigo-600 relative overflow-hidden items-center justify-center p-12 text-white">
+        <!-- Background Decor -->
+        <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-indigo-600 to-purple-800 z-0"></div>
+        <div class="absolute -top-24 -left-24 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 right-0 w-[500px] h-[500px] bg-indigo-500/30 rounded-full blur-3xl"></div>
+
+        <div class="relative z-10 max-w-lg text-center">
+            <div class="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-xl border border-white/10">
+                <i class="fas fa-brain text-3xl text-white"></i>
+            </div>
+            <h2 class="text-4xl font-bold mb-6 tracking-tight">Sua aprovação é uma questão de estratégia.</h2>
+            <p class="text-indigo-100 text-lg leading-relaxed">O Método FERM organiza seu ciclo, cronometra seu foco e mostra exatamente onde você precisa melhorar.</p>
+            
+            <!-- Social Proof Pill -->
+            <div class="mt-12 inline-flex items-center gap-3 bg-white/10 backdrop-blur-md px-5 py-3 rounded-full border border-white/10">
+                <div class="flex -space-x-2">
+                    <div class="w-8 h-8 rounded-full bg-yellow-400 border-2 border-indigo-600"></div>
+                    <div class="w-8 h-8 rounded-full bg-green-400 border-2 border-indigo-600"></div>
+                    <div class="w-8 h-8 rounded-full bg-purple-400 border-2 border-indigo-600"></div>
+                </div>
+                <span class="text-sm font-medium">+2.000 horas estudadas hoje</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Side (Form) -->
+    <div class="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
+        <div class="w-full max-w-md">
+            <div class="text-center lg:text-left mb-10">
+                <a href="/landing.html" class="inline-flex items-center gap-2 text-indigo-600 font-bold text-xl mb-8 lg:hidden">
+                    <i class="fas fa-brain"></i> Método FERM
+                </a>
+                <h1 class="text-3xl font-bold text-slate-900 mb-2">Bem-vindo de volta! 👋</h1>
+                <p class="text-slate-500">Insira seus dados para continuar estudando.</p>
+            </div>
+
+            <form id="loginForm" class="space-y-5">
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Email</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-3.5 text-slate-400"><i class="far fa-envelope"></i></span>
+                        <input type="email" id="email" required class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all font-medium text-slate-700 placeholder-slate-400" placeholder="seu@email.com">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2 flex justify-between">
+                        Senha
+                        <a href="#" class="text-indigo-600 text-xs font-bold hover:underline">Esqueceu?</a>
+                    </label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-3.5 text-slate-400"><i class="fas fa-lock"></i></span>
+                        <input type="password" id="password" required class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all font-medium text-slate-700" placeholder="••••••••">
+                    </div>
+                </div>
+                
+                <div id="error-msg" class="text-red-500 text-sm bg-red-50 p-3 rounded-lg flex items-center gap-2 hidden border border-red-100">
+                    <i class="fas fa-exclamation-circle"></i> <span>Erro aqui</span>
+                </div>
+
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-indigo-200 transition-all hover:-translate-y-0.5 active:translate-y-0 text-lg">
+                    Entrar na Plataforma
+                </button>
+            </form>
+
+            <div class="mt-8 text-center">
+                <p class="text-slate-500 text-sm">
+                    Não tem uma conta? 
+                    <a href="/register.html" class="text-indigo-600 font-bold hover:text-indigo-700 hover:underline transition-colors">Cadastre-se gratuitamente</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const btn = e.target.querySelector('button');
+            const errorDiv = document.getElementById('error-msg');
+            const originalText = btn.innerText;
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Verificando...';
+            errorDiv.classList.add('hidden');
+
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    localStorage.setItem('studyflow_user', JSON.stringify(data.user));
+                    window.location.href = '/app.html';
+                } else {
+                    throw new Error(data.error || 'Email ou senha incorretos.');
+                }
+            } catch (err) {
+                errorDiv.querySelector('span').innerText = err.message;
+                errorDiv.classList.remove('hidden');
+                btn.disabled = false;
+                btn.innerText = originalText;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <script>
+        // Roteamento Simples no Client-Side
+        const user = localStorage.getItem('studyflow_user');
+        if (user) {
+            window.location.replace('/app.html');
+        } else {
+            window.location.replace('/landing.html');
+        }
+    </script>
+</head>
+<body>
+    Redirecionando...
+</body>
+</html>

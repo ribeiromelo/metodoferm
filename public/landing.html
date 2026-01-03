@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Método FERM - Domine seu Edital</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class', // Ativa modo manual via classe CSS
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Smooth transition for theme switch */
+        body, div, nav, h1, h2, h3, p, span, section {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        .blob {
+            position: absolute;
+            filter: blur(80px);
+            opacity: 0.6; /* Mais visível no light mode */
+            z-index: -1;
+            animation: float 10s infinite alternate;
+        }
+        .dark .blob { opacity: 0.3; } /* Menos visível no dark */
+
+        @keyframes float {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(20px, 20px); }
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-[#0B0F19] text-slate-900 dark:text-white overflow-x-hidden selection:bg-indigo-500 selection:text-white">
+
+    <!-- Blobs de Fundo (Adaptativos) -->
+    <div class="blob w-96 h-96 bg-blue-200 dark:bg-indigo-900/50 top-0 left-0 rounded-full mix-blend-multiply dark:mix-blend-normal"></div>
+    <div class="blob w-[500px] h-[500px] bg-purple-200 dark:bg-purple-900/50 bottom-0 right-0 delay-1000 rounded-full mix-blend-multiply dark:mix-blend-normal"></div>
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 top-0 border-b border-slate-200 dark:border-white/5 bg-white/80 dark:bg-[#0B0F19]/80 backdrop-blur-md">
+        <div class="container mx-auto px-6 h-20 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold shadow-lg shadow-indigo-200 dark:shadow-indigo-500/20">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <span class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">Método FERM</span>
+            </div>
+            <div class="flex items-center gap-6">
+                <!-- Theme Toggle -->
+                <button onclick="toggleTheme()" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-white/10 flex items-center justify-center text-slate-600 dark:text-yellow-300 hover:bg-slate-200 dark:hover:bg-white/20 transition-all">
+                    <i class="fas fa-sun block dark:hidden"></i>
+                    <i class="fas fa-moon hidden dark:block"></i>
+                </button>
+
+                <a href="/login.html" class="hidden md:block text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-white font-medium transition-colors">Fazer Login</a>
+                <a href="/register.html" class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-2.5 rounded-full font-bold hover:bg-slate-800 dark:hover:bg-slate-200 transition-all transform hover:scale-105 shadow-xl shadow-slate-200 dark:shadow-none">
+                    Começar Agora
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="pt-40 pb-20 relative">
+        <div class="container mx-auto px-6 text-center max-w-5xl">
+            
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-indigo-100 dark:border-indigo-500/30 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-300 text-xs font-bold uppercase tracking-widest mb-8 animate-pulse">
+                <span class="w-2 h-2 rounded-full bg-indigo-500 dark:bg-indigo-400"></span>
+                Novo: Gamificação v2.0
+            </div>
+
+            <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-8 tracking-tight text-slate-900 dark:text-white">
+                Pare de estudar errado.<br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 dark:from-indigo-400 dark:via-purple-400 dark:to-pink-400">Estude com Inteligência.</span>
+            </h1>
+            
+            <p class="text-xl text-slate-500 dark:text-slate-400 mb-12 max-w-2xl mx-auto leading-relaxed font-medium">
+                O <strong>Método FERM</strong> substitui suas planilhas manuais por um algoritmo de ciclo infinito que se adapta à sua rotina real. Estude, revise e evolua.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mb-20">
+                <a href="/register.html" class="bg-indigo-600 hover:bg-indigo-700 text-white text-lg px-10 py-4 rounded-2xl font-bold transition-all hover:shadow-xl hover:shadow-indigo-200 dark:hover:shadow-indigo-500/20 flex items-center justify-center gap-2">
+                    <i class="fas fa-rocket"></i> Criar Conta Grátis
+                </a>
+                <a href="#funcionalidades" class="bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-white text-lg px-10 py-4 rounded-2xl font-bold transition-all hover:bg-slate-50 flex items-center justify-center gap-2">
+                    <i class="fas fa-play text-slate-400"></i> Como funciona
+                </a>
+            </div>
+
+            <!-- CSS Mockup (Light/Dark Aware) -->
+            <div class="relative mx-auto max-w-4xl perspective-1000 group">
+                <!-- Main Window -->
+                <div class="relative bg-white dark:bg-[#0F1623] border border-slate-200 dark:border-slate-800 rounded-t-3xl shadow-2xl overflow-hidden transform rotate-x-6 translate-y-10 group-hover:translate-y-5 transition-all duration-700 ease-out">
+                    <!-- Fake Browser Header -->
+                    <div class="h-12 bg-slate-50 dark:bg-[#1A202C] border-b border-slate-200 dark:border-slate-800 flex items-center px-4 gap-2">
+                        <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-400"></div>
+                        <div class="ml-4 bg-slate-200 dark:bg-[#0B0F19] h-6 w-64 rounded-md opacity-50"></div>
+                    </div>
+                    <!-- App Content Preview -->
+                    <div class="p-8 grid grid-cols-1 md:grid-cols-3 gap-6 bg-slate-50 dark:bg-[#0B0F19]/50">
+                        <!-- Sidebar -->
+                        <div class="hidden md:block col-span-1 h-64 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm animate-pulse"></div>
+                        <!-- Main -->
+                        <div class="col-span-2 space-y-6">
+                            <div class="flex gap-4">
+                                <div class="h-32 w-1/2 bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-600/20 dark:to-purple-600/20 border border-indigo-100 dark:border-indigo-500/30 rounded-xl shadow-sm"></div>
+                                <div class="h-32 w-1/2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm"></div>
+                            </div>
+                            <div class="h-24 w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Bento Grid Features -->
+    <section id="funcionalidades" class="py-32 relative bg-white dark:bg-[#0B0F19]">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-20">
+                <h2 class="text-3xl md:text-5xl font-bold mb-6 text-slate-900 dark:text-white">Tudo o que você precisa</h2>
+                <p class="text-slate-500 dark:text-slate-400 text-lg">Uma suíte completa de ferramentas para alta performance.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                <!-- Feature 1 (Large) -->
+                <div class="md:col-span-2 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5 p-10 rounded-3xl relative overflow-hidden group hover:border-indigo-200 dark:hover:border-indigo-500/30 transition-all">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-100 dark:bg-indigo-600/20 rounded-full blur-3xl -mr-16 -mt-16 transition-all"></div>
+                    <div class="relative z-10">
+                        <div class="w-14 h-14 bg-white dark:bg-indigo-500/20 rounded-2xl flex items-center justify-center text-indigo-600 dark:text-indigo-400 text-2xl mb-6 shadow-sm dark:shadow-none">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4 text-slate-900 dark:text-white">Ciclo de Estudos Infinito</h3>
+                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed max-w-md">Esqueça o cronograma fixo de "Segunda é dia de Português". Nosso algoritmo cria uma fila inteligente que se adapta aos seus imprevistos.</p>
+                    </div>
+                </div>
+
+                <!-- Feature 2 (Tall) -->
+                <div class="md:row-span-2 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5 p-10 rounded-3xl relative overflow-hidden group hover:border-green-200 dark:hover:border-green-500/30 transition-all">
+                    <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-green-100 dark:from-green-500/10 to-transparent"></div>
+                    <div class="relative z-10">
+                        <div class="w-14 h-14 bg-white dark:bg-green-500/20 rounded-2xl flex items-center justify-center text-green-600 dark:text-green-400 text-2xl mb-6 shadow-sm dark:shadow-none">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4 text-slate-900 dark:text-white">Analytics</h3>
+                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-8">Saiba exatamente sua taxa de acertos por matéria e identifique seus pontos fracos.</p>
+                    </div>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5 p-10 rounded-3xl relative overflow-hidden group hover:border-purple-200 dark:hover:border-purple-500/30 transition-all">
+                    <div class="w-14 h-14 bg-white dark:bg-purple-500/20 rounded-2xl flex items-center justify-center text-purple-600 dark:text-purple-400 text-2xl mb-6 shadow-sm dark:shadow-none">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-slate-900 dark:text-white">Gamificação</h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm">Suba de patente (Novato → Lenda) conforme resolve questões.</p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5 p-10 rounded-3xl relative overflow-hidden group hover:border-pink-200 dark:hover:border-pink-500/30 transition-all">
+                    <div class="w-14 h-14 bg-white dark:bg-pink-500/20 rounded-2xl flex items-center justify-center text-pink-600 dark:text-pink-400 text-2xl mb-6 shadow-sm dark:shadow-none">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-slate-900 dark:text-white">Revisão</h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm">Controle específico para Flashcards e Questões de revisão.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Final -->
+    <section class="py-20">
+        <div class="container mx-auto px-6">
+            <div class="bg-slate-900 rounded-[3rem] p-12 md:p-24 text-center border border-white/10 relative overflow-hidden shadow-2xl">
+                <div class="absolute top-0 right-0 w-96 h-96 bg-indigo-500 rounded-full blur-[120px] opacity-30"></div>
+                
+                <h2 class="text-4xl md:text-6xl font-bold mb-8 relative z-10 text-white">Sua aprovação começa aqui.</h2>
+                <p class="text-xl text-slate-400 mb-12 max-w-2xl mx-auto relative z-10">Junte-se à plataforma que está mudando a forma de estudar.</p>
+                
+                <a href="/register.html" class="inline-flex items-center gap-3 bg-white text-slate-900 text-lg px-12 py-5 rounded-2xl font-bold hover:bg-indigo-50 transition-all hover:-translate-y-1 relative z-10 shadow-xl">
+                    <span>Criar Conta Gratuita</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="border-t border-slate-200 dark:border-white/5 py-12 bg-slate-50 dark:bg-[#0B0F19]">
+        <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-2 text-slate-500">
+                <i class="fas fa-brain text-indigo-600 dark:text-indigo-500"></i>
+                <span class="font-bold text-slate-700 dark:text-slate-300">Método FERM</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-600 text-sm">&copy; 2026 Todos os direitos reservados.</p>
+            <div class="flex gap-6">
+                <a href="#" class="text-slate-400 hover:text-indigo-600 dark:hover:text-white transition-colors"><i class="fab fa-instagram text-xl"></i></a>
+                <a href="#" class="text-slate-400 hover:text-indigo-600 dark:hover:text-white transition-colors"><i class="fab fa-twitter text-xl"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Theme Script -->
+    <script>
+        function toggleTheme() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.theme = 'light';
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.theme = 'dark';
+            }
+        }
+
+        // Check preference on load
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            // Uncomment to default to system dark mode logic if desired, 
+            // but for "Default White" requirement, we usually favor removing 'dark' unless explicit.
+            // However, sticking to localStorage is best UX.
+            // If user explicitly wants default white:
+            if (localStorage.theme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+
+</body>
+</html>
